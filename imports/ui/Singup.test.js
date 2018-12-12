@@ -10,14 +10,14 @@ var sinonChai = require("sinon-chai");
 chai.use(sinonChai);
 configure({ adapter: new Adapter() });
 
-import {Login} from './Login';
+import {Signup} from './Signup';
 
 
 if(Meteor.isClient){
-  describe('Login' , function () {
+  describe('Signup' , function () {
     it('should show error messages' , function() {
       const err = 'This is not working';
-      const wrapper = mount(<Login loginWithPassword={() => {}}/>);
+      const wrapper = mount(<Signup createUser={() => {}}/>);
       wrapper.setState({error : err});
 
       const paragraph = wrapper.find('p').text();
@@ -27,28 +27,42 @@ if(Meteor.isClient){
       expect(wrapper.find('p').length).to.equal(0);
     });
 
-    it('should call loginWithPassword with the form data' , function () {
+    it('should call createUser with the form data' , function () {
       const email = 'andrew@test.com';
       const password = 'password123';
       const mySpy = spy();
-      const wrapper = mount(<Login loginWithPassword={mySpy}/>);
+      const wrapper = mount(<Signup createUser={mySpy}/>);
       wrapper.ref('email').value = email;
       wrapper.ref('password').value = password;
       wrapper.find('form').simulate('submit');
 
-      expect(mySpy).to.have.been.calledWith({email} , password);
+      expect(mySpy).to.have.been.calledWith({email , password});
     });
 
-    it('should set loginWithPassword callback errors', function () {
+    it('should set error if the password is short' , function () {
+      const email = 'andrew@test.com';
+      const password = 'password     ';
       const mySpy = spy();
-      const wrapper = mount(<Login loginWithPassword={mySpy}/>);
+      const wrapper = mount(<Signup createUser={mySpy}/>);
+      wrapper.ref('email').value = email;
+      wrapper.ref('password').value = password;
+      wrapper.find('form').simulate('submit');
+      expect(wrapper.state('error')).to.not.be.equal('');
+    });
+    
+    it('should set createUser callback errors', function () {
+      const password = 'password123!';
+      const reason = 'Failed for a reason';
+      const mySpy = spy();
+      const wrapper = mount(<Signup createUser={mySpy}/>);
+      wrapper.ref('password').value = password;
       wrapper.find('form').simulate('submit');
       const spyCalls = mySpy.getCalls();
       //grabs the callback from the time the spy was called and call it to activate the callback.
-      spyCalls[0].args[2]({});
-      expect(wrapper.state('error')).to.not.equal(''); 
+      spyCalls[0].args[1]({reason});
+      expect(wrapper.state('error')).to.equal(reason); 
 
-      spyCalls[0].args[2]();
+      spyCalls[0].args[1]();
       expect(wrapper.state('error')).to.equal(''); 
 
     });
