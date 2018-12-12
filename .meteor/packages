@@ -23,3 +23,5 @@ underscore
 accounts-password
 session
 fourseven:scss@=3.13.0
+meteortesting:mocha
+react-meteor-data
