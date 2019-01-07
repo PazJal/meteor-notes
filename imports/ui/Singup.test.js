@@ -10,6 +10,8 @@ var sinonChai = require("sinon-chai");
 chai.use(sinonChai);
 configure({ adapter: new Adapter() });
 
+import {MemoryRouter} from 'react-router-dom';
+
 import {Signup} from './Signup';
 
 
@@ -17,13 +19,16 @@ if(Meteor.isClient){
   describe('Signup' , function () {
     it('should show error messages' , function() {
       const err = 'This is not working';
-      const wrapper = mount(<Signup createUser={() => {}}/>);
-      wrapper.setState({error : err});
+      const wrapper = mount(
+        <MemoryRouter initialEntries={['/']} initialIndex={0}>
+          <Signup createUser={() => {}}/>
+        </MemoryRouter>);
+      wrapper.find(Signup).setState({error : err});
 
       const paragraph = wrapper.find('p').text();
       expect(paragraph).to.equal(err);
 
-      wrapper.setState({error: ''});
+      wrapper.find(Signup).setState({error: ''});
       expect(wrapper.find('p').length).to.equal(0);
     });
 
@@ -31,9 +36,12 @@ if(Meteor.isClient){
       const email = 'andrew@test.com';
       const password = 'password123';
       const mySpy = spy();
-      const wrapper = mount(<Signup createUser={mySpy}/>);
-      wrapper.ref('email').value = email;
-      wrapper.ref('password').value = password;
+      const wrapper = mount(
+        <MemoryRouter initialEntries={['/']} initialIndex={0}>
+          <Signup createUser={mySpy}/>
+        </MemoryRouter>);
+      wrapper.find(Signup).instance().refs['email'].value = email;
+      wrapper.find(Signup).instance().refs['password'].value = password;
       wrapper.find('form').simulate('submit');
 
       expect(mySpy).to.have.been.calledWith({email , password});
@@ -43,27 +51,33 @@ if(Meteor.isClient){
       const email = 'andrew@test.com';
       const password = 'password     ';
       const mySpy = spy();
-      const wrapper = mount(<Signup createUser={mySpy}/>);
-      wrapper.ref('email').value = email;
-      wrapper.ref('password').value = password;
+      const wrapper = mount(
+        <MemoryRouter initialEntries={['/']} initialIndex={0}>
+          <Signup createUser={mySpy}/>
+        </MemoryRouter>);
+      wrapper.find(Signup).instance().refs['email'].value  = email;
+      wrapper.find(Signup).instance().refs['password'].value = password;
       wrapper.find('form').simulate('submit');
-      expect(wrapper.state('error')).to.not.be.equal('');
+      expect(wrapper.find(Signup).state('error')).to.not.be.equal('');
     });
     
     it('should set createUser callback errors', function () {
       const password = 'password123!';
       const reason = 'Failed for a reason';
       const mySpy = spy();
-      const wrapper = mount(<Signup createUser={mySpy}/>);
-      wrapper.ref('password').value = password;
+      const wrapper = mount(
+        <MemoryRouter initialEntries={['/']} initialIndex={0}>
+          <Signup createUser={mySpy}/>
+        </MemoryRouter>);
+      wrapper.find(Signup).instance().refs['password'].value = password;
       wrapper.find('form').simulate('submit');
       const spyCalls = mySpy.getCalls();
       //grabs the callback from the time the spy was called and call it to activate the callback.
       spyCalls[0].args[1]({reason});
-      expect(wrapper.state('error')).to.equal(reason); 
+      expect(wrapper.find(Signup).state('error')).to.equal(reason); 
 
       spyCalls[0].args[1]();
-      expect(wrapper.state('error')).to.equal(''); 
+      expect(wrapper.find(Signup).state('error')).to.equal(''); 
 
     });
   });

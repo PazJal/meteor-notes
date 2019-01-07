@@ -6,7 +6,7 @@ import React from 'react';
 import { Router , Route , Switch} from 'react-router-dom';
 import createHistory from 'history/createBrowserHistory';
 
-const browserHistory = createHistory();
+export const browserHistory = createHistory();
 
 //Project imports:
 import Signup from './../ui/Signup';
@@ -51,6 +51,7 @@ export const routes = (
           <Route path="/" component={Login} onEnter={onEnterPublicPage} exact/>
           <Route path="/signup" component={Signup} onEnter={onEnterPublicPage}/>
           <Route path="/dashboard" component={Dashboard} onEnter={onEnterPrivatePage}/>
+          <Route path="/dashboard/:id" component={Dashboard} onEnter={onEnterPrivatePage}/>
           <Route path="*" component={NotFound}/>
         </Switch>
       </div>

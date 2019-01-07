@@ -7,6 +7,8 @@ import {Session} from 'meteor/session';
 import { routes , onAuthChange} from './../imports/routes/routes';
 import './../imports/startup/simple-schema-config';
 
+import {browserHistory} from '../imports/routes/routes';
+
 
 Tracker.autorun(() => {
   const isAuthenticated = !!Meteor.userId();
@@ -17,7 +19,7 @@ Tracker.autorun(() => {
   const selectedNoteId = Session.get('selectedNoteId');
 
   if(selectedNoteId){
-    
+    browserHistory.replace(`/dashboard/${selectedNoteId}`);
   }
 });
 
