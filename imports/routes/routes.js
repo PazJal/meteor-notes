@@ -1,7 +1,13 @@
 //NPM imports:
 import {Meteor} from 'meteor/meteor';
 import React from 'react';
-import { Router , Route , browserHistory} from 'react-router';
+// import { Router , Route , browserHistory} from 'react-router';
+
+import { Router , Route , Switch} from 'react-router-dom';
+import createHistory from 'history/createBrowserHistory';
+
+const browserHistory = createHistory();
+
 //Project imports:
 import Signup from './../ui/Signup';
 import Dashboard from './../ui/Dashboard';
@@ -24,7 +30,7 @@ const onEnterPrivatePage = () => {
 };
 
 export const onAuthChange= (isAuthenticated) => {
-  const pathname = browserHistory.getCurrentLocation().pathname;
+  const pathname = browserHistory.location.pathname;
   const isUnauthenticatedPage = unAuthenticatedPages.includes(pathname);
   const isAuthenticatedPage = authenticatedPages.includes(pathname);
 
@@ -40,10 +46,14 @@ export const onAuthChange= (isAuthenticated) => {
 export const routes = (
   
     <Router history={browserHistory}>
-      <Route path="/" component={Login} onEnter={onEnterPublicPage}/>
-      <Route path="/signup" component={Signup} onEnter={onEnterPublicPage}/>
-      <Route path="/dashboard" component={Dashboard} onEnter={onEnterPrivatePage}/>
-      <Route path="*" component={NotFound}/>
+      <div>
+        <Switch>
+          <Route path="/" component={Login} onEnter={onEnterPublicPage} exact/>
+          <Route path="/signup" component={Signup} onEnter={onEnterPublicPage}/>
+          <Route path="/dashboard" component={Dashboard} onEnter={onEnterPrivatePage}/>
+          <Route path="*" component={NotFound}/>
+        </Switch>
+      </div>
     </Router>
     
 );
