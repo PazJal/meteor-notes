@@ -4,6 +4,7 @@ import React from 'react';
 //Project imports:
 import PrivateHeader from './PrivateHeader';
 import NoteList from './NoteList';
+import Editor from './Editor';
 
 export default () => {
   return (
@@ -11,6 +12,7 @@ export default () => {
       <PrivateHeader title="Dashboard"/>
       <div className="page-content">  
         <NoteList />
+        <Editor />
       </div>
     </div>
   );
