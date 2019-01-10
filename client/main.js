@@ -12,7 +12,9 @@ import {browserHistory} from '../imports/routes/routes';
 
 Tracker.autorun(() => {
   const isAuthenticated = !!Meteor.userId();
-  onAuthChange(isAuthenticated);
+  const currentPagePrivacy = Session.get('currentPagePrivacy');
+  console.log('Current' , currentPagePrivacy);
+  onAuthChange(isAuthenticated , currentPagePrivacy);
 });
 
 Tracker.autorun(() => {

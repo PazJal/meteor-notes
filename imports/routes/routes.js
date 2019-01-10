@@ -18,43 +18,10 @@ import PrivateRoute from '../routes/PrivateRoute';
 import PublicRoute from '../routes/PublicRoute';
 import NoteRoute from '../routes/NoteRoute';
 
-const unAuthenticatedPages = [ '/' , '/signup'];
-const authenticatedPages =  ['/dashboard'];
 
-const onEnterPublicPage = () => {
-  console.log('Hello public!');
-  if (Meteor.userId()) {
-    browserHistory.replace('/dashboard');
-  } else {
-    browserHistory.replace('http://google.com');
-  }
-};
-
-const onEnterPrivatePage = () => {
-  console.log('Hello Again');
-  if (!Meteor.userId()) {
-    browserHistory.replace('/');
-  }
-  else {
-    browserHistory.replace('http://google.com');
-  }
-};
-
-const onEnterNotePage = (nextState) => {
-  console.log('Entered');
-  if (!Meteor.userId()) {
-    browserHistory.replace('/');
-  }
-  else {
-    browserHistory.replace('http://google.com');
-    console.log(nextState);
-  }
-};
-
-export const onAuthChange= (isAuthenticated) => {
-  const pathname = browserHistory.location.pathname;
-  const isUnauthenticatedPage = unAuthenticatedPages.includes(pathname);
-  const isAuthenticatedPage = authenticatedPages.includes(pathname);
+export const onAuthChange= (isAuthenticated , currentPagePrivacy) => {
+  const isUnauthenticatedPage = currentPagePrivacy === 'unauth';
+  const isAuthenticatedPage = currentPagePrivacy === 'auth';
 
   if (isUnauthenticatedPage && isAuthenticated) {
     browserHistory.replace('/dashboard') ;
@@ -69,14 +36,19 @@ export const routes = (
   
     <Router history={browserHistory}>
       <div>
+
+
+    
         <Switch>
-          <PublicRoute path="/" component={Login} onEnter={onEnterPublicPage} exact/>
-          <PublicRoute path="/signup" component={Signup} onEnter={onEnterPublicPage}/>
-          <PrivateRoute path="/dashboard" component={Dashboard} onEnter={onEnterPrivatePage} exact/>
-          <NoteRoute path="/dashboard/:id" component={Dashboard} onEnter={onEnterNotePage}/>
+          <PublicRoute path="/" component={Login} privacy="unauth" exact/>
+          <PublicRoute path="/signup" component={Signup} privacy="unauth"/>
+          <PrivateRoute path="/dashboard" component={Dashboard} privacy="auth" exact/>
+          <NoteRoute path="/dashboard/:id" component={Dashboard} privacy="auth"/>
           <Route path="*" component={NotFound}/>
         </Switch>
+
       </div>
+    
     </Router>
     
 );

@@ -10,7 +10,6 @@ import NoteListItem from './NoteListItem';
 import NoteListEmptyItem from './NoteListEmptyItem';
 
 export const NoteList = (props) => {
-  console.log('NoteList params' , props);
 
   return (
     <div>
