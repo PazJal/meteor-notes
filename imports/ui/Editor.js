@@ -3,7 +3,7 @@ import {withTracker} from 'meteor/react-meteor-data';
 import {Session} from 'meteor/session';
 import propTypes from 'prop-types';
 import {Meteor} from 'meteor/meteor';
-import {browserHistory} from '../routes/routes';
+// import {browserHistory} from '../routes/routes';
 
 import {Notes} from '../api/notes';
 
@@ -36,7 +36,8 @@ export class Editor extends React.Component {
     console.log(currentNoteId);
     if(currentNoteId) {
       this.props.call('notes.remove' , currentNoteId);
-      this.props.browserHistory.push('/dashboard');
+      // this.props.browserHistory.push('/dashboard');
+      Session.set('selectedNoteId' , '');
 
     }
   }
@@ -73,8 +74,8 @@ export class Editor extends React.Component {
 Editor.propTypes = {
   note: propTypes.object,
   selectedNoteId: propTypes.string,
-  call: propTypes.func.isRequired,
-  browserHistory: propTypes.object.isRequired
+  call: propTypes.func.isRequired
+  // browserHistory: propTypes.object.isRequired
 }
 
 export default withTracker(() => {
@@ -82,7 +83,7 @@ export default withTracker(() => {
   return {
     selectedNoteId,
     note: Notes.findOne(selectedNoteId),
-    call: Meteor.call,
-    browserHistory
+    call: Meteor.call
+    // browserHistory
   };
 })(Editor);
