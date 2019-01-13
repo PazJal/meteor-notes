@@ -2,6 +2,7 @@ import React from 'react';
 import {Meteor} from 'meteor/meteor';
 import {withTracker} from 'meteor/react-meteor-data';
 import propTypes from 'prop-types';
+import {Session} from 'meteor/session';
 
 export const NoteListHeader = (props) => {
 
@@ -9,7 +10,11 @@ export const NoteListHeader = (props) => {
     <div>
       <button
         onClick={() => {
-          props.meteorCall('notes.insert');
+          props.meteorCall('notes.insert' , (err , res) => {
+            if(res) {
+              props.Session.set('selectedNoteId' , res);
+            }
+          });
         }}
       >
       Add note</button>
@@ -19,12 +24,14 @@ export const NoteListHeader = (props) => {
 }
 
 NoteListHeader.propTypes = {
-  meteorCall: propTypes.func.isRequired
+  meteorCall: propTypes.func.isRequired,
+  Session: propTypes.object.isRequired
 }
 
 export default withTracker(() => {
   return {
-    meteorCall: Meteor.call
+    meteorCall: Meteor.call,
+    Session
   };
 
 })(NoteListHeader);
