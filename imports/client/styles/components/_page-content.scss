@@ -12,17 +12,31 @@
 }
 
 .page-content__sidebar {
-  display:none;
-  width: $page-content-sidebar-width;
-  padding-right: $large-space;
+  display:flex;
+  transition: left .3s ease;
+  width:100vw;
+
+  position: fixed;
+  top: $header-height;
+  bottom: 0;
+  left: -100vw;
+  bottom: 0;
+
   @include desktop(){
     display: flex;
+    position: static;
+    width: $page-content-sidebar-width;
+    padding-right: $large-space;
   }
 }
 
+.isNavOpen .page-content__sidebar {
+  left:0;
+}
+
 .page-content__main {
+  width: 100vw;
   display: flex;
-  width: 100%;
   @include desktop(){
     width: $page-content-main-width;
   }
